@@ -25,7 +25,8 @@ def dup_edges(graph_df, delta, period=12):
 # edge information after we count the bidirectional motifs
 
 # create and fill the data structure for post processing
-# TODO use pandas df 
+# TODO use pandas df DONE except for the groupby part for plotting
+# so ill leave the comment as is so i know how to plot it
 # 3 columns t1, t2, counts
 # and then groupby('t1') to plot the graph
 # then use itertools.combinations -- 
@@ -93,9 +94,9 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 break
             elif edges[j][0] == edges[i][1] and edges[j][1] == edges[i][0]:
                 count += 1
-                # t1 = edges[i][0]['timestamp']
-                # t2 = edges[i][1]['timestamp']
-                # above do not work rn
+                t1 = edges[i][2]['timestamp']
+                t2 = edges[j][2]['timestamp']
+                print(f't1: {t1}, t2: {t2}')
                 # TODO be able to do something like struc_df[t1][t2]count+=1
             j += 1
         edges[i][2]['delta'][str(delta)] = count
