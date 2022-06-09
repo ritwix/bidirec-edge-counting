@@ -98,6 +98,9 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 t2 = edges[j][2]['timestamp']
                 print(f't1: {t1}, t2: {t2}')
                 # TODO be able to do something like struc_df[t1][t2]count+=1
+                # there has to be some algebraic relationship between t1, t2,
+                # and the pandas df index. I just need to figure it out, maybe 
+                # I'll ask abhijin to help me out
             j += 1
         edges[i][2]['delta'][str(delta)] = count
         bidirec_counts.append(count)
