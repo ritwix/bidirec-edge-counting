@@ -68,6 +68,9 @@ def setup_data_struc(graph, graph_dup, delta, period):
     
     # convert this dict to a pandas dataframe for easy plotting
     struc_df = pd.DataFrame.from_dict(struc)
+    struc_df = struc_df.set_index(['t1', 't2'])
+    struc_df.squeeze()
+    print(struc_df)
     return struc_df
 
 # convert the graph to a multidigraph in networkx from pandas dataframe
@@ -110,9 +113,10 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 # index is the index in the data structure
                 # that contains the two time periods
                 # and it is according to this formula
-                ind = (t2 - t1) + (period + delta)*(t1 - 1) - ((t1-2)*(t1-1))//2
-                print(f'ind: {ind}')
-                struc_df.iloc[ind]['count'] += 1
+                # ind = (t2 - t1) + (period + delta)*(t1 - 1) - ((t1-2)*(t1-1))//2
+                # print(f'ind: {ind}')
+                # struc_df.iloc[ind]['count'] += 1
+                struc_df.loc[(t1, t2)] += 1
             j += 1
         edges[i][2]['delta'][str(delta)] = count
         bidirec_counts.append(count)
