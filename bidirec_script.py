@@ -70,7 +70,6 @@ def setup_data_struc(graph, graph_dup, delta, period):
     struc_df = pd.DataFrame.from_dict(struc)
     struc_df = struc_df.set_index(['t1', 't2'])
     struc_df.squeeze()
-    print(struc_df)
     return struc_df
 
 # convert the graph to a multidigraph in networkx from pandas dataframe
@@ -132,6 +131,7 @@ def main():
     parser.add_argument('separator', type=str, help='The separator in the file containing the graph.')
     parser.add_argument('delta', type=int, help='The delta to use when counting.')
     parser.add_argument('period', type=int, help='The period within which the graph repeats. Eg 12 for a graph that repeats yearly with monthly intervals.')
+    parser.add_argument('output_file', type=str, help='File to output the results of this script.')
     args = parser.parse_args()
     
     # read in the file and duplicate its edges for the appropiate delta, period
@@ -156,7 +156,7 @@ def main():
     G = nx.relabel_nodes(G, nx.get_node_attributes(G, 'old_id'), copy=True)
     # print(G.edges(data=True))
     print(data_struc.to_string())
-    
+    data_struc.to_csv('out.csv')
 
 if __name__ == '__main__':
     main()
