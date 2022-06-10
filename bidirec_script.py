@@ -69,7 +69,8 @@ def setup_data_struc(graph, graph_dup, delta, period):
     # convert this dict to a pandas dataframe for easy plotting
     struc_df = pd.DataFrame.from_dict(struc)
     struc_df = struc_df.set_index(['t1', 't2'])
-    struc_df.squeeze()
+    struc_df['delta'] = delta
+    # struc_df.squeeze()
     return struc_df
 
 # convert the graph to a multidigraph in networkx from pandas dataframe
@@ -107,7 +108,7 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 count += 1
                 t1 = edges[i][2]['timestamp']
                 t2 = edges[j][2]['timestamp']
-                print(f't1: {t1}, t2: {t2}')
+                # print(f't1: {t1}, t2: {t2}')
                 # print(f'period: {period}, delta: {delta}')
                 # index is the index in the data structure
                 # that contains the two time periods
@@ -115,7 +116,7 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 # ind = (t2 - t1) + (period + delta)*(t1 - 1) - ((t1-2)*(t1-1))//2
                 # print(f'ind: {ind}')
                 # struc_df.iloc[ind]['count'] += 1
-                struc_df.loc[(t1, t2)] += 1
+                struc_df.loc[(t1, t2)]['count'] += 1
             j += 1
         edges[i][2]['delta'][str(delta)] = count
         bidirec_counts.append(count)
@@ -155,8 +156,8 @@ def main():
     
     G = nx.relabel_nodes(G, nx.get_node_attributes(G, 'old_id'), copy=True)
     # print(G.edges(data=True))
-    print(data_struc.to_string())
-    data_struc.to_csv('out.csv')
+    # print(data_struc.to_string())
+    data_struc.to_csv(args.output_file)
 
 if __name__ == '__main__':
     main()
