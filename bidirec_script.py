@@ -106,11 +106,10 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 t1 = edges[i][2]['timestamp']
                 t2 = edges[j][2]['timestamp']
                 print(f't1: {t1}, t2: {t2}')
-                print(f'period: {period}, delta: {delta}')
-                # TODO be able to do something like struc_df[t1][t2]count+=1
-                # there has to be some algebraic relationship between t1, t2,
-                # and the pandas df index. I just need to figure it out, maybe 
-                # I'll ask abhijin to help me out
+                # print(f'period: {period}, delta: {delta}')
+                # index is the index in the data structure
+                # that contains the two time periods
+                # and it is according to this formula
                 ind = (t2 - t1) + (period + delta)*(t1 - 1) - ((t1-2)*(t1-1))//2
                 print(f'ind: {ind}')
                 struc_df.iloc[ind]['count'] += 1
