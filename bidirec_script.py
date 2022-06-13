@@ -4,7 +4,6 @@
 import networkx as nx
 import pandas as pd
 import numpy as np
-import math
 import argparse
 
 # function to read the given file with a given separator
@@ -79,11 +78,12 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
     # select edges that are in original period to avoid redundancy
     # ie they have timestamp <= period
     # with conversion (timestamp -= 1) from earlier, use < not <=
+    # actually I reverted this to fix an off-by-one error, caused by me trying to be too clever
     edges_original = [(u,v) for u,v,e in graph.edges(data=True) if e['timestamp'] <= period] 
     bidirec_counts = []
     for i in range(len(edges_original)):
         count = 0
-        j = i# + 1
+        j = i + 1
         while j < len(edges):
             if edges[j][2]['timestamp'] > edges[i][2]['timestamp'] + delta:
                 break
