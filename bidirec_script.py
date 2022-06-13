@@ -25,31 +25,14 @@ def dup_edges(graph_df, delta, period=12):
 # edge information after we count the bidirectional motifs
 
 # create and fill the data structure for post processing
-# TODO use pandas df DONE except for the groupby part for plotting
-# so ill leave the comment as is so i know how to plot it
-# 3 columns t1, t2, counts
-# and then groupby('t1') to plot the graph
-# then use itertools.combinations -- 
 # t1 is all of the possible timestamps in the network
-# change what you had to a dataframe
 # want t1 to only have the originals
 # and t2 to go all the way through the duplicates
 # also want to structure to go the duplicates for t2
-# length of thing = unique_len*delta + (unique_len*(unique_len+1))/2 (from math on my desk whiteboard if asked)
-def setup_data_struc(graph, graph_dup, delta, period):
+def setup_data_struc(delta, period):
     struc = {'t1': [], 't2': [], 'count': []}
-    # number of unique timestamps in the original graph
-    #unique = pd.unique(graph['timestamp'])
-    # number of unique timestamps in the graph with extra timestamps
-    #unique_dup = pd.unique(graph_dup['timestamp'])
-    #unique_dup_len = len(unique_dup)
-    #unique = sorted(unique)
-    #unique_dup = sorted(unique_dup)
-    #unique_len = len(unique)
-    # length of thing = unique_len*delta + (unique_len*(unique_len+1))/2
-    #num_pairs = int(unique_len*delta + (unique_len*(unique_len+1))/2)
-
-    # new way includes all possible timestamps for easier math
+    
+    # all possible timestamp combinations
     num_pairs = period*delta + (period * (period+1))//2
 
     l = []
@@ -108,14 +91,7 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 count += 1
                 t1 = edges[i][2]['timestamp']
                 t2 = edges[j][2]['timestamp']
-                # print(f't1: {t1}, t2: {t2}')
-                # print(f'period: {period}, delta: {delta}')
-                # index is the index in the data structure
-                # that contains the two time periods
-                # and it is according to this formula
-                # ind = (t2 - t1) + (period + delta)*(t1 - 1) - ((t1-2)*(t1-1))//2
-                # print(f'ind: {ind}')
-                # struc_df.iloc[ind]['count'] += 1
+                # update data structure with the counts
                 struc_df.loc[(t1, t2)]['count'] += 1
             j += 1
         edges[i][2]['delta'][str(delta)] = count
@@ -141,7 +117,7 @@ def main():
     # print(df_dup)
 
     # set up the data structure to store stuff
-    data_struc = setup_data_struc(graph=df, graph_dup=df_dup, delta=args.delta, period=args.period)
+    data_struc = setup_data_struc(delta=args.delta, period=args.period)
     # data_struc = setup_data_struc(graph=df, graph_dup=df_dup, delta=3, period=5)
     # print(data_struc.to_string())
 
