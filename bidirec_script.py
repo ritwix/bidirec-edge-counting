@@ -79,7 +79,7 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
     # select edges that are in original period to avoid redundancy
     # ie they have timestamp <= period
     # with conversion (timestamp -= 1) from earlier, use < not <=
-    edges_original = [(u,v) for u,v,e in graph.edges(data=True) if e['timestamp'] < period] 
+    edges_original = [(u,v) for u,v,e in graph.edges(data=True) if e['timestamp'] <= period] 
     bidirec_counts = []
     for i in range(len(edges_original)):
         count = 0
