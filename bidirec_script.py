@@ -98,6 +98,35 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
         bidirec_counts.append(count)
     return edges
 
+# thing to do all of the stuff in main so I can use this script as a module
+# all of the arguments are the same as those in main
+# sf: source file 
+# sci: source column index, the index in the source file where the edge source nodes are listed
+# dci: destination column index, the index in the source file where the edge destination nodes are listed
+# tci: timestamp column index, the index in the source file where the edge timestamps are listed
+# sp: separator in the source file
+# d: delta, the time window within which to measure bidirectional motifs
+# pd: period, the period within which the graph repeats. eg 12 for a 1-year period with monthly timestamps
+# of: output file, the file to which you want to output the results of this count
+def doStuff(sf, sci, dci, tci, sp, d, pd, of):
+    df = read_file(sf, sp, sci, dci, tci)
+    df_dup = dup_edges(df, delta=d, period=pd)
+
+    data_struc = setup_data_struc(delta=d, period=pd)
+
+    G = convert_nx(df_dup)
+    for e in G.edges(data=True):
+        e[2]['delta'] = {}
+    list(G.edges(data=True))
+
+    G.edges(data=True)
+    edges = bidirecCountAndStore(G, delta = d, period = pd, struc_df=data_struc)
+    
+    G = nx.relabel_nodes(G, nx.get_node_attributes(G, 'old_id'), copy=True)
+    
+    data_struc.to_csv(of)
+
+
 def main():
     # parge command line arguments
     parser = argparse.ArgumentParser(description='Get bidirectional motif counts in a temporal network.')
