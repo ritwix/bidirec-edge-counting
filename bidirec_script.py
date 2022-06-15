@@ -5,6 +5,7 @@ import networkx as nx
 import pandas as pd
 import numpy as np
 import argparse
+from pdb import set_trace
 
 # function to read the given file with a given separator
 def read_file(filename, separator, source_column_index, destination_column_index, timestamp_column_index):
@@ -89,12 +90,15 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
                 break
             elif edges[j][0] == edges[i][1] and edges[j][1] == edges[i][0]:
                 count += 1
+                print(f'src: {edges[i][0]} dst: {edges[i][1]}')
                 t1 = edges[i][2]['timestamp']
                 t2 = edges[j][2]['timestamp']
                 # update data structure with the counts
                 struc_df.loc[(t1, t2)]['count'] += 1
             j += 1
         edges[i][2]['delta'][str(delta)] = count
+        # if count > 0:
+        #     set_trace()
         bidirec_counts.append(count)
     return edges
 
@@ -110,6 +114,7 @@ def bidirecCountAndStore(graph, delta, period, struc_df):
 # of: output file, the file to which you want to output the results of this count
 def doStuff(sf, sci, dci, tci, sp, d, pd, of):
     df = read_file(sf, sp, sci, dci, tci)
+    #set_trace()
     df_dup = dup_edges(df, delta=d, period=pd)
 
     data_struc = setup_data_struc(delta=d, period=pd)
@@ -117,9 +122,9 @@ def doStuff(sf, sci, dci, tci, sp, d, pd, of):
     G = convert_nx(df_dup)
     for e in G.edges(data=True):
         e[2]['delta'] = {}
-    list(G.edges(data=True))
+    #list(G.edges(data=True))
 
-    G.edges(data=True)
+    #G.edges(data=True)
     edges = bidirecCountAndStore(G, delta = d, period = pd, struc_df=data_struc)
     
     G = nx.relabel_nodes(G, nx.get_node_attributes(G, 'old_id'), copy=True)
